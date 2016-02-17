@@ -1,40 +1,118 @@
 #![allow(unused_mut)]
 
-pub use algorithms::union_find::UnionFind;
+pub use algorithms::union_find::{UnionFind, QuickFind, QuickUnion};
 
 pub use expectest::prelude::{be_true, be_false, be_equal_to};
 
 describe! union_find_tests {
 
-    before_each {
-        let mut union_find = UnionFind::new(10);
+    describe! quick_find_tests {
+
+        before_each {
+            let mut quick_find = QuickFind::new(10);
+        }
+
+        it "should root be point itself" {
+            expect!(quick_find.find(1)).to(be_equal_to(1));
+            expect!(quick_find.find(2)).to(be_equal_to(2));
+        }
+
+        it "should root be connected point" {
+            quick_find.union(1, 2);
+
+            expect!(quick_find.find(1)).to(be_equal_to(2));
+        }
+
+        it "should root be last connected point for multiple unions" {
+            quick_find.union(1, 2);
+            expect!(quick_find.find(1)).to(be_equal_to(2));
+
+            quick_find.union(2, 3);
+            expect!(quick_find.find(1)).to(be_equal_to(3));
+            expect!(quick_find.find(2)).to(be_equal_to(3));
+
+            quick_find.union(3, 4);
+            expect!(quick_find.find(1)).to(be_equal_to(4));
+            expect!(quick_find.find(2)).to(be_equal_to(4));
+            expect!(quick_find.find(3)).to(be_equal_to(4));
+
+            quick_find.union(4, 5);
+            expect!(quick_find.find(1)).to(be_equal_to(5));
+            expect!(quick_find.find(2)).to(be_equal_to(5));
+            expect!(quick_find.find(3)).to(be_equal_to(5));
+            expect!(quick_find.find(4)).to(be_equal_to(5));
+        }
+
+        it "should be connected united points" {
+            quick_find.union(1, 2);
+
+            expect!(quick_find.connected(1, 2)).to(be_true());
+        }
+
+        it "should not be connected not united points" {
+            expect!(quick_find.connected(1, 3)).to(be_false());
+        }
+
+        it "should be connected having same connected point" {
+            quick_find.union(1, 2);
+            quick_find.union(2, 3);
+
+            expect!(quick_find.connected(1, 3)).to(be_true());
+        }
     }
 
-    it "should root be point itself" {
-        expect!(union_find.find(1)).to(be_equal_to(1));
-        expect!(union_find.find(2)).to(be_equal_to(2));
-    }
+    describe! quick_union_tests {
 
-    it "should root be connected point" {
-        union_find.union(1, 2);
+        before_each {
+            let mut quick_union = QuickUnion::new(10);
+        }
 
-        expect!(union_find.find(1)).to(be_equal_to(2));
-    }
+        it "should root be point itself" {
+            expect!(quick_union.find(1)).to(be_equal_to(1));
+            expect!(quick_union.find(2)).to(be_equal_to(2));
+        }
 
-    it "should be connected united points" {
-        union_find.union(1, 2);
+        it "should be root connecting point" {
+            quick_union.union(1, 2);
 
-        expect!(union_find.connected(1, 2)).to(be_true());
-    }
+            expect!(quick_union.find(1)).to(be_equal_to(2));
+        }
 
-    it "should not be connected not united points" {
-        expect!(union_find.connected(1, 3)).to(be_false());
-    }
+        it "should be root last connecting point for multiple unions" {
+            quick_union.union(1, 2);
+            expect!(quick_union.find(1)).to(be_equal_to(2));
 
-    it "should be connected having same connected point" {
-        union_find.union(1, 2);
-        union_find.union(2, 3);
+            quick_union.union(2, 3);
+            expect!(quick_union.find(1)).to(be_equal_to(3));
+            expect!(quick_union.find(2)).to(be_equal_to(3));
 
-        expect!(union_find.connected(1, 3)).to(be_true());
+            quick_union.union(3, 4);
+            expect!(quick_union.find(1)).to(be_equal_to(4));
+            expect!(quick_union.find(2)).to(be_equal_to(4));
+            expect!(quick_union.find(3)).to(be_equal_to(4));
+
+            quick_union.union(4, 5);
+            expect!(quick_union.find(1)).to(be_equal_to(5));
+            expect!(quick_union.find(2)).to(be_equal_to(5));
+            expect!(quick_union.find(3)).to(be_equal_to(5));
+            expect!(quick_union.find(4)).to(be_equal_to(5));
+        }
+
+        it "should be connected united points" {
+            quick_union.union(1, 2);
+
+            expect!(quick_union.connected(1, 2)).to(be_true());
+        }
+
+        it "should not be connected not united points" {
+            expect!(quick_union.connected(1, 3)).to(be_false());
+        }
+
+        it "should be connected having same united point" {
+            quick_union.union(1, 2);
+            quick_union.union(2, 3);
+
+            expect!(quick_union.connected(1, 3)).to(be_true());
+        }
     }
 }
