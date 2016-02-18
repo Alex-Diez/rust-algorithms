@@ -2,7 +2,9 @@ pub trait UnionFind {
 
     fn union(&mut self, p: usize, q: usize);
 
-    fn connected(&self, p: usize, q: usize) -> bool;
+    fn connected(&self, p: usize, q: usize) -> bool {
+        self.find(p) == self.find(q)
+    }
 
     fn find(&self, p: usize) -> usize;
 }
@@ -34,10 +36,6 @@ impl UnionFind for QuickFind {
                 *p = q_root;
             }
         }
-    }
-
-    fn connected(&self, p: usize, q: usize) -> bool {
-        self.find(p) == self.find(q)
     }
 
     fn find(&self, p: usize) -> usize {
@@ -72,8 +70,49 @@ impl UnionFind for QuickUnion {
         }
     }
 
-    fn connected(&self, p: usize, q: usize) -> bool {
-        self.find(p) == self.find(q)
+    fn find(&self, p: usize) -> usize {
+        let mut point = p;
+        while point != self.points[point] {
+            point = self.points[point]
+        }
+        point
+    }
+}
+
+pub struct WeightedQuickUnion {
+    points: Vec<usize>,
+    sizes: Vec<usize>
+}
+
+impl WeightedQuickUnion {
+
+    pub fn new(size: usize) -> WeightedQuickUnion {
+        let mut vec = Vec::with_capacity(size);
+        let mut sizes = Vec::with_capacity(size);
+        for p in 0..size {
+            vec.push(p);
+            sizes.push(1);
+        }
+        WeightedQuickUnion {
+            points: vec,
+            sizes: sizes
+        }
+    }
+}
+
+impl UnionFind for WeightedQuickUnion {
+
+    fn union(&mut self, p: usize, q: usize) {
+        let p_root = self.find(p);
+        let q_root = self.find(q);
+        if self.sizes[p_root] <= self.sizes[q_root] {
+            self.points[p_root] = q_root;
+            self.sizes[q_root] += self.sizes[p_root];
+        }
+        else {
+            self.points[q_root] = p_root;
+            self.sizes[p_root] += self.sizes[q_root];
+        }
     }
 
     fn find(&self, p: usize) -> usize {

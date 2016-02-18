@@ -1,6 +1,6 @@
 #![allow(unused_mut)]
 
-pub use algorithms::union_find::{UnionFind, QuickFind, QuickUnion};
+pub use algorithms::union_find::{UnionFind, QuickFind, QuickUnion, WeightedQuickUnion};
 
 pub use expectest::prelude::{be_true, be_false, be_equal_to};
 
@@ -17,26 +17,24 @@ describe! union_find_tests {
             expect!(quick_find.find(2)).to(be_equal_to(2));
         }
 
-        it "should root be connected point" {
-            quick_find.union(1, 2);
-
-            expect!(quick_find.find(1)).to(be_equal_to(2));
-        }
-
         it "should root be last connected point for multiple unions" {
             quick_find.union(1, 2);
+
             expect!(quick_find.find(1)).to(be_equal_to(2));
 
             quick_find.union(2, 3);
+
             expect!(quick_find.find(1)).to(be_equal_to(3));
             expect!(quick_find.find(2)).to(be_equal_to(3));
 
             quick_find.union(3, 4);
+
             expect!(quick_find.find(1)).to(be_equal_to(4));
             expect!(quick_find.find(2)).to(be_equal_to(4));
             expect!(quick_find.find(3)).to(be_equal_to(4));
 
             quick_find.union(4, 5);
+
             expect!(quick_find.find(1)).to(be_equal_to(5));
             expect!(quick_find.find(2)).to(be_equal_to(5));
             expect!(quick_find.find(3)).to(be_equal_to(5));
@@ -72,26 +70,24 @@ describe! union_find_tests {
             expect!(quick_union.find(2)).to(be_equal_to(2));
         }
 
-        it "should be root connecting point" {
-            quick_union.union(1, 2);
-
-            expect!(quick_union.find(1)).to(be_equal_to(2));
-        }
-
         it "should be root last connecting point for multiple unions" {
             quick_union.union(1, 2);
+
             expect!(quick_union.find(1)).to(be_equal_to(2));
 
             quick_union.union(2, 3);
+
             expect!(quick_union.find(1)).to(be_equal_to(3));
             expect!(quick_union.find(2)).to(be_equal_to(3));
 
             quick_union.union(3, 4);
+
             expect!(quick_union.find(1)).to(be_equal_to(4));
             expect!(quick_union.find(2)).to(be_equal_to(4));
             expect!(quick_union.find(3)).to(be_equal_to(4));
 
             quick_union.union(4, 5);
+
             expect!(quick_union.find(1)).to(be_equal_to(5));
             expect!(quick_union.find(2)).to(be_equal_to(5));
             expect!(quick_union.find(3)).to(be_equal_to(5));
@@ -113,6 +109,54 @@ describe! union_find_tests {
             quick_union.union(2, 3);
 
             expect!(quick_union.connected(1, 3)).to(be_true());
+        }
+    }
+
+    describe! weighted_quick_union_tests {
+
+        before_each {
+            let mut weighted_quick_union = WeightedQuickUnion::new(10);
+        }
+
+        it "should root be point itself" {
+            expect!(weighted_quick_union.find(1)).to(be_equal_to(1));
+            expect!(weighted_quick_union.find(2)).to(be_equal_to(2));
+        }
+
+        it "should root be connected point" {
+            weighted_quick_union.union(1, 2);
+
+            expect!(weighted_quick_union.find(1)).to(be_equal_to(2));
+        }
+
+        it "should be connected united points" {
+            weighted_quick_union.union(1, 2);
+
+            expect!(weighted_quick_union.connected(1, 2)).to(be_true());
+        }
+
+        it "should not be connected not united points" {
+            expect!(weighted_quick_union.connected(1, 3)).to(be_false());
+        }
+
+        it "should be connected having same united point" {
+            weighted_quick_union.union(1, 2);
+            weighted_quick_union.union(2, 3);
+
+            expect!(weighted_quick_union.connected(1, 3)).to(be_true());
+        }
+
+        it "should root be a point with the biggest number of connection" {
+            weighted_quick_union.union(1, 2);
+            weighted_quick_union.union(2, 3);
+            weighted_quick_union.union(2, 4);
+
+            weighted_quick_union.union(5, 6);
+            weighted_quick_union.union(6, 7);
+
+            weighted_quick_union.union(2, 6);
+
+            expect!(weighted_quick_union.find(6)).to(be_equal_to(2));
         }
     }
 }
