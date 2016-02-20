@@ -38,7 +38,8 @@ describe! percolation_tests {
     }
 
     it "should be full if a cell connects with cells on the top" {
-        open_column_till_row(&mut percolation, 2, 1);
+        percolation.open(2, 1);
+        percolation.open(1, 1);
 
         expect!(percolation.is_full(2, 1)).to(be_true());
     }
@@ -51,24 +52,24 @@ describe! percolation_tests {
     }
 
     it "should be full if a cell connects to a full cell on the left" {
-        open_column_till_row(&mut percolation, 3, 1);
         percolation.open(3, 2);
+        open_column_till_row(&mut percolation, 3, 1);
 
         expect!(percolation.is_full(3, 2)).to(be_true());
     }
 
     it "should be full if a cell connects to a full cell on the right" {
-        open_column_till_row(&mut percolation, 3, 3);
         percolation.open(3, 2);
+        open_column_till_row(&mut percolation, 3, 3);
 
         expect!(percolation.is_full(3, 2)).to(be_true());
     }
 
     it "should be full if a cell connects to a full cell on the bottom" {
+        percolation.open(3, 3);
         open_column_till_row(&mut percolation, SIDE_SIZE, 1);
         percolation.open(4, 2);
         percolation.open(4, 3);
-        percolation.open(3, 3);
 
         expect!(percolation.is_full(3, 3)).to(be_true());
     }
@@ -81,13 +82,6 @@ describe! percolation_tests {
 
     it "should not percolate when none of bottom cells is full" {
         expect!(percolation.percolates()).to(be_false());
-    }
-
-    it "should be full without matter on order of cell open operations" {
-        percolation.open(SIDE_SIZE, 1);
-        open_column_till_row(&mut percolation, SIDE_SIZE - 1, 1);
-
-        expect!(percolation.is_full(SIDE_SIZE, 1)).to(be_true());
     }
 
     it "should not contain backwash" {
