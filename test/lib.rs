@@ -7,3 +7,4 @@ extern crate algorithms;
 extern crate expectest;
 
 mod unioin_find;
+mod percolation;

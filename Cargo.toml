@@ -1,6 +1,6 @@
 [package]
 name = "algorithms"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Alex-Diez <alexvic.amatory@gmail.com>"]
 
 [lib]
@@ -11,6 +11,6 @@ name = "test"
 path = "test/lib.rs"
 
 [dependencies]
-clippy = "0.0.41"
+clippy = "0.0.42"
 expectest = "0.4.1"
 stainless = "0.1.4"
