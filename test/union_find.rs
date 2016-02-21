@@ -1,5 +1,3 @@
-#![allow(unused_mut)]
-
 pub use algorithms::union_find::{UnionFind, QuickFind, QuickUnion, WeightedQuickUnion};
 
 pub use expectest::prelude::{be_true, be_false, be_equal_to};
