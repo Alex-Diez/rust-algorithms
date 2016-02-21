@@ -7,7 +7,7 @@ use std::fs::OpenOptions;
 use std::io::Read;
 use std::str::Lines;
 
-use algorithms::union_find::{UnionFind, QuickFind, QuickUnion, WeightedQuickUnion};
+use algorithms::union_find::{UnionFind, QuickFind, QuickUnion, WeightedQuickUnion, PathCompressionWeightedQuickUnion};
 
 fn set_up_union_find(path: &str) -> (usize, Vec<(usize, usize)>) {
     let file_str = read_data_from_file(path);
@@ -185,6 +185,48 @@ fn weighted_quick_union_large(bench: &mut test::Bencher) {
         || {
             for &(p, q) in data.iter() {
                 weighted_quick_union.union(p, q);
+            }
+        }
+    )
+}
+
+#[bench]
+fn path_compression_weighted_quick_union_small(bench: &mut test::Bencher) {
+    let (size, data) = set_up_union_find("benches/union_find_100");
+    let mut path_compression_weighted_quick_union = PathCompressionWeightedQuickUnion::new(size);
+
+    bench.iter(
+        || {
+            for &(p, q) in data.iter() {
+                path_compression_weighted_quick_union.union(p, q);
+            }
+        }
+    )
+}
+
+#[bench]
+fn path_compression_weighted_quick_union_medium(bench: &mut test::Bencher) {
+    let (size, data) = set_up_union_find("benches/union_find_1000");
+    let mut path_compression_weighted_quick_union = PathCompressionWeightedQuickUnion::new(size);
+
+    bench.iter(
+        || {
+            for &(p, q) in data.iter() {
+                path_compression_weighted_quick_union.union(p, q);
+            }
+        }
+    )
+}
+
+#[bench]
+fn path_compression_weighted_quick_union_large(bench: &mut test::Bencher) {
+    let (size, data) = set_up_union_find("benches/union_find_10000");
+    let mut path_compression_weighted_quick_union = PathCompressionWeightedQuickUnion::new(size);
+
+    bench.iter(
+        || {
+            for &(p, q) in data.iter() {
+                path_compression_weighted_quick_union.union(p, q);
             }
         }
     )

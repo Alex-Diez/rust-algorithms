@@ -1,4 +1,4 @@
-pub use algorithms::union_find::{UnionFind, QuickFind, QuickUnion, WeightedQuickUnion};
+pub use algorithms::union_find::{UnionFind, QuickFind, QuickUnion, WeightedQuickUnion, PathCompressionWeightedQuickUnion};
 
 pub use expectest::prelude::{be_true, be_false, be_equal_to};
 
@@ -155,6 +155,54 @@ describe! union_find_tests {
             weighted_quick_union.union(2, 6);
 
             expect!(weighted_quick_union.find(6)).to(be_equal_to(2));
+        }
+    }
+
+    describe! path_compression_weighted_quick_union_tests {
+
+        before_each {
+            let mut path_compression_weighted_quick_union = PathCompressionWeightedQuickUnion::new(10);
+        }
+
+        it "should root be point itself" {
+            expect!(path_compression_weighted_quick_union.find(1)).to(be_equal_to(1));
+            expect!(path_compression_weighted_quick_union.find(2)).to(be_equal_to(2));
+        }
+
+        it "should root be connected point" {
+            path_compression_weighted_quick_union.union(1, 2);
+
+            expect!(path_compression_weighted_quick_union.find(1)).to(be_equal_to(2));
+        }
+
+        it "should be connected united points" {
+            path_compression_weighted_quick_union.union(1, 2);
+
+            expect!(path_compression_weighted_quick_union.connected(1, 2)).to(be_true());
+        }
+
+        it "should not be connected not united points" {
+            expect!(path_compression_weighted_quick_union.connected(1, 3)).to(be_false());
+        }
+
+        it "should be connected having same united point" {
+            path_compression_weighted_quick_union.union(1, 2);
+            path_compression_weighted_quick_union.union(2, 3);
+
+            expect!(path_compression_weighted_quick_union.connected(1, 3)).to(be_true());
+        }
+
+        it "should root be a point with the biggest number of connection" {
+            path_compression_weighted_quick_union.union(1, 2);
+            path_compression_weighted_quick_union.union(2, 3);
+            path_compression_weighted_quick_union.union(2, 4);
+
+            path_compression_weighted_quick_union.union(5, 6);
+            path_compression_weighted_quick_union.union(6, 7);
+
+            path_compression_weighted_quick_union.union(2, 6);
+
+            expect!(path_compression_weighted_quick_union.find(6)).to(be_equal_to(2));
         }
     }
 }

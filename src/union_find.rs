@@ -2,11 +2,11 @@ pub trait UnionFind {
 
     fn union(&mut self, p: usize, q: usize);
 
-    fn connected(&self, p: usize, q: usize) -> bool {
+    fn connected(&mut self, p: usize, q: usize) -> bool {
         self.find(p) == self.find(q)
     }
 
-    fn find(&self, p: usize) -> usize;
+    fn find(&mut self, p: usize) -> usize;
 }
 
 pub struct QuickFind {
@@ -38,7 +38,7 @@ impl UnionFind for QuickFind {
         }
     }
 
-    fn find(&self, p: usize) -> usize {
+    fn find(&mut self, p: usize) -> usize {
         self.points[p]
     }
 }
@@ -70,7 +70,7 @@ impl UnionFind for QuickUnion {
         }
     }
 
-    fn find(&self, p: usize) -> usize {
+    fn find(&mut self, p: usize) -> usize {
         let mut point = p;
         while point != self.points[point] {
             point = self.points[point]
@@ -115,10 +115,58 @@ impl UnionFind for WeightedQuickUnion {
         }
     }
 
-    fn find(&self, p: usize) -> usize {
+    fn find(&mut self, p: usize) -> usize {
         let mut point = p;
         while point != self.points[point] {
-            point = self.points[point]
+            point = self.points[point];
+        }
+        point
+    }
+}
+
+pub struct PathCompressionWeightedQuickUnion {
+    points: Vec<usize>,
+    sizes: Vec<usize>
+}
+
+impl PathCompressionWeightedQuickUnion {
+
+    pub fn new(size: usize) -> PathCompressionWeightedQuickUnion {
+        let mut vec = Vec::with_capacity(size);
+        let mut sizes = Vec::with_capacity(size);
+        for p in 0..size {
+            vec.push(p);
+            sizes.push(1);
+        }
+        PathCompressionWeightedQuickUnion {
+            points: vec,
+            sizes: sizes
+        }
+    }
+}
+
+impl UnionFind for PathCompressionWeightedQuickUnion {
+
+    fn union(&mut self, p: usize, q: usize) {
+        let p_root = self.find(p);
+        let q_root = self.find(q);
+        if self.sizes[p_root] <= self.sizes[q_root] {
+            self.points[p_root] = q_root;
+            self.sizes[q_root] += self.sizes[p_root];
+        }
+        else {
+            self.points[q_root] = p_root;
+            self.sizes[p_root] += self.sizes[q_root];
+        }
+    }
+
+    fn find(&mut self, p: usize) -> usize {
+        let mut point = p;
+        while point != self.points[point] {
+            let p = point;
+            let parent = self.points[self.points[point]];
+            point = parent;
+            self.points[p] = parent;
         }
         point
     }
