@@ -11,4 +11,3 @@ extern crate expectest;
 
 mod union_find;
 mod percolation;
-mod generator;
