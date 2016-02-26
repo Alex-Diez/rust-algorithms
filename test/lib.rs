@@ -12,3 +12,4 @@ extern crate expectest;
 mod union_find;
 mod percolation;
 mod generator;
+mod collinear_points;
