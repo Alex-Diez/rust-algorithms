@@ -7,7 +7,7 @@ use std::fs::OpenOptions;
 use std::io::Read;
 use std::str::Lines;
 
-use algorithms::percolation::{Percolation, BruteForcePercolation, UnionFindPercolation};
+use algorithms::percolation::{Percolation, BruteForcePercolation, UnionFindPercolation, HackUnionFindPercolation};
 
 fn set_up_percolation(path: &str) -> (usize, Vec<(usize, usize)>) {
     let file_str = read_data_from_file(path);
@@ -138,6 +138,48 @@ fn union_find_percolation_medium(bench: &mut test::Bencher) {
 fn union_find_percolation_large(bench: &mut test::Bencher) {
     let (side_size, data) = set_up_percolation("benches/percolation_500x500");
     let mut percolation = UnionFindPercolation::new(side_size);
+
+    bench.iter(
+        || {
+            for &(r, c) in data.iter() {
+                percolation.open(r, c);
+            }
+        }
+    )
+}
+
+#[bench]
+fn hack_union_find_percolation_small(bench: &mut test::Bencher) {
+    let (side_size, data) = set_up_percolation("benches/percolation_10x10");
+    let mut percolation = HackUnionFindPercolation::new(side_size);
+
+    bench.iter(
+        || {
+            for &(r, c) in data.iter() {
+                percolation.open(r, c);
+            }
+        }
+    )
+}
+
+#[bench]
+fn hack_union_find_percolation_medium(bench: &mut test::Bencher) {
+    let (side_size, data) = set_up_percolation("benches/percolation_100x100");
+    let mut percolation = HackUnionFindPercolation::new(side_size);
+
+    bench.iter(
+        || {
+            for &(r, c) in data.iter() {
+                percolation.open(r, c);
+            }
+        }
+    )
+}
+
+#[bench]
+fn hack_union_find_percolation_large(bench: &mut test::Bencher) {
+    let (side_size, data) = set_up_percolation("benches/percolation_500x500");
+    let mut percolation = HackUnionFindPercolation::new(side_size);
 
     bench.iter(
         || {

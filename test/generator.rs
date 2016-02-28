@@ -1,4 +1,4 @@
-pub use algorithms::generator::{Generator, DefaultGenrator, DigitBaseGenerator};
+pub use algorithms::generator::{Generator, DefaultGenerator, DigitBaseGenerator};
 
 pub use expectest::prelude::be_equal_to;
 
@@ -7,12 +7,12 @@ describe! generator_tests {
     describe! default_generator_tests {
 
         it "should generate numbers from 0 till 100" {
-            let mut generator = DefaultGenrator::new();
+            let mut generator = DefaultGenerator::new();
 
             let data = (0..).take(101).collect::<Vec<usize>>();
             let mut vec = Vec::with_capacity(100);
             for _ in (0..).take(101) {
-                vec.push((*generator).next());
+                vec.push(generator.next());
             }
 
             expect!(vec).to(be_equal_to(data));
@@ -34,7 +34,7 @@ describe! generator_tests {
 
             let mut vec = Vec::new();
             for _ in 0..data.len() {
-                vec.push((*generator).next());
+                vec.push(generator.next());
             }
 
             expect!(vec).to(be_equal_to(data));

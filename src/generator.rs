@@ -3,21 +3,20 @@ pub trait Generator {
     fn next(&mut self) -> usize;
 }
 
-pub struct DefaultGenrator {
+pub struct DefaultGenerator {
     current: usize
 }
 
-impl DefaultGenrator {
+impl DefaultGenerator {
 
-    pub fn new() -> Box<DefaultGenrator> {
-        let g = DefaultGenrator {
+    pub fn new() -> DefaultGenerator {
+        DefaultGenerator {
             current: 0
-        };
-        Box::new(g)
+        }
     }
 }
 
-impl Generator for DefaultGenrator {
+impl Generator for DefaultGenerator {
 
     fn next(&mut self) -> usize {
         let ret = self.current;
@@ -35,14 +34,17 @@ pub struct DigitBaseGenerator {
 
 impl DigitBaseGenerator {
 
-    pub fn new(base: usize, limit: usize) -> Box<DigitBaseGenerator> {
-        let g = DigitBaseGenerator {
+    pub fn new(base: usize, limit: usize) -> DigitBaseGenerator {
+        DigitBaseGenerator {
             current: 0,
             base: base,
             limit: limit,
             iter: 0
-        };
-        Box::new(g)
+        }
+    }
+
+    pub fn current(&self) -> usize {
+        self.current
     }
 }
 

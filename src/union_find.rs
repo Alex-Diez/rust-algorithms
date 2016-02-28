@@ -1,3 +1,7 @@
+use std::collections::HashMap;
+
+use generator::{Generator, DefaultGenerator};
+
 pub trait UnionFind {
 
     fn union(&mut self, p: usize, q: usize);
@@ -125,21 +129,27 @@ impl UnionFind for WeightedQuickUnion {
 }
 
 pub struct PathCompressionWeightedQuickUnion {
-    points: Vec<usize>,
-    sizes: Vec<usize>
+    points: HashMap<usize, usize>,
+    sizes: HashMap<usize, usize>
 }
 
 impl PathCompressionWeightedQuickUnion {
 
     pub fn new(size: usize) -> PathCompressionWeightedQuickUnion {
-        let mut vec = Vec::with_capacity(size);
-        let mut sizes = Vec::with_capacity(size);
-        for p in 0..size {
-            vec.push(p);
-            sizes.push(1);
+        let mut generator = DefaultGenerator::new();
+        PathCompressionWeightedQuickUnion::with_generator(size, &mut generator)
+    }
+
+    pub fn with_generator<G: Generator>(size: usize, generator: &mut G) -> PathCompressionWeightedQuickUnion {
+        let mut sizes = HashMap::with_capacity(size);
+        let mut points = HashMap::with_capacity(size);
+        for _ in (0..).take(size) {
+            let n = generator.next();
+            points.insert(n, n);
+            sizes.insert(n, 1);
         }
         PathCompressionWeightedQuickUnion {
-            points: vec,
+            points: points,
             sizes: sizes
         }
     }
@@ -150,23 +160,25 @@ impl UnionFind for PathCompressionWeightedQuickUnion {
     fn union(&mut self, p: usize, q: usize) {
         let p_root = self.find(p);
         let q_root = self.find(q);
-        if self.sizes[p_root] <= self.sizes[q_root] {
-            self.points[p_root] = q_root;
-            self.sizes[q_root] += self.sizes[p_root];
+        if self.sizes[&p_root] <= self.sizes[&q_root] {
+            self.points.insert(p_root, q_root);
+            let size = self.sizes[&q_root] + self.sizes[&p_root];
+            self.sizes.insert(q_root, size);
         }
         else {
-            self.points[q_root] = p_root;
-            self.sizes[p_root] += self.sizes[q_root];
+            self.points.insert(q_root, p_root);
+            let size = self.sizes[&p_root] + self.sizes[&q_root];
+            self.sizes.insert(p_root, size);
         }
     }
 
     fn find(&mut self, p: usize) -> usize {
         let mut point = p;
-        while point != self.points[point] {
+        while point != self.points[&point] {
             let p = point;
-            let parent = self.points[self.points[point]];
+            let parent = self.points[&(self.points[&point])];
             point = parent;
-            self.points[p] = parent;
+            self.points.insert(p, parent);
         }
         point
     }
