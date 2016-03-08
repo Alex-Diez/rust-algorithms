@@ -11,7 +11,7 @@ name = "test"
 path = "test/lib.rs"
 
 [dependencies]
-clippy = "0.0.43"
+clippy = "0.0.48"
 expectest = "0.4.1"
 stainless = "0.1.4"
 rand = "0.3.14"
