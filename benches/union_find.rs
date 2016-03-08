@@ -65,12 +65,12 @@ fn populate_data(lines: &mut Lines) -> Vec<(usize, usize)> {
 }
 
 #[bench]
-fn quick_find_small(bench: &mut test::Bencher) {
+fn quick_find_small_population(bench: &mut test::Bencher) {
     let (size, data) = set_up_union_find("benches/union_find_100");
-    let mut quick_find = QuickFind::new(size);
 
     bench.iter(
         || {
+            let mut quick_find = QuickFind::new(size);
             for &(p, q) in data.iter() {
                 quick_find.union(p, q);
             }
@@ -79,12 +79,23 @@ fn quick_find_small(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn quick_find_medium(bench: &mut test::Bencher) {
-    let (size, data) = set_up_union_find("benches/union_find_1000");
-    let mut quick_find = QuickFind::new(size);
+fn quick_find_small_creation(bench: &mut test::Bencher) {
+    let (size, _) = set_up_union_find("benches/union_find_100");
 
     bench.iter(
         || {
+            QuickFind::new(size)
+        }
+    )
+}
+
+#[bench]
+fn quick_find_medium_population(bench: &mut test::Bencher) {
+    let (size, data) = set_up_union_find("benches/union_find_1000");
+
+    bench.iter(
+        || {
+            let mut quick_find = QuickFind::new(size);
             for &(p, q) in data.iter() {
                 quick_find.union(p, q);
             }
@@ -93,12 +104,23 @@ fn quick_find_medium(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn quick_find_large(bench: &mut test::Bencher) {
-    let (size, data) = set_up_union_find("benches/union_find_10000");
-    let mut quick_find = QuickFind::new(size);
+fn quick_find_medium_creation(bench: &mut test::Bencher) {
+    let (size, _) = set_up_union_find("benches/union_find_1000");
 
     bench.iter(
         || {
+            QuickFind::new(size)
+        }
+    )
+}
+
+#[bench]
+fn quick_find_large_population(bench: &mut test::Bencher) {
+    let (size, data) = set_up_union_find("benches/union_find_10000");
+
+    bench.iter(
+        || {
+            let mut quick_find = QuickFind::new(size);
             for &(p, q) in data.iter() {
                 quick_find.union(p, q);
             }
@@ -107,12 +129,23 @@ fn quick_find_large(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn quick_union_small(bench: &mut test::Bencher) {
-    let (size, data) = set_up_union_find("benches/union_find_100");
-    let mut quick_union = QuickUnion::new(size);
+fn quick_find_large_creation(bench: &mut test::Bencher) {
+    let (size, _) = set_up_union_find("benches/union_find_10000");
 
     bench.iter(
         || {
+            QuickFind::new(size)
+        }
+    )
+}
+
+#[bench]
+fn quick_union_small_population(bench: &mut test::Bencher) {
+    let (size, data) = set_up_union_find("benches/union_find_100");
+
+    bench.iter(
+        || {
+            let mut quick_union = QuickUnion::new(size);
             for &(p, q) in data.iter() {
                 quick_union.union(p, q);
             }
@@ -121,12 +154,23 @@ fn quick_union_small(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn quick_union_medium(bench: &mut test::Bencher) {
-    let (size, data) = set_up_union_find("benches/union_find_1000");
-    let mut quick_union = QuickUnion::new(size);
+fn quick_union_small_creation(bench: &mut test::Bencher) {
+    let (size, _) = set_up_union_find("benches/union_find_100");
 
     bench.iter(
         || {
+            QuickUnion::new(size)
+        }
+    )
+}
+
+#[bench]
+fn quick_union_medium_population(bench: &mut test::Bencher) {
+    let (size, data) = set_up_union_find("benches/union_find_1000");
+
+    bench.iter(
+        || {
+            let mut quick_union = QuickUnion::new(size);
             for &(p, q) in data.iter() {
                 quick_union.union(p, q);
             }
@@ -135,12 +179,23 @@ fn quick_union_medium(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn quick_union_large(bench: &mut test::Bencher) {
-    let (size, data) = set_up_union_find("benches/union_find_10000");
-    let mut quick_union = QuickUnion::new(size);
+fn quick_union_medium_creation(bench: &mut test::Bencher) {
+    let (size, _) = set_up_union_find("benches/union_find_1000");
 
     bench.iter(
         || {
+            QuickUnion::new(size)
+        }
+    )
+}
+
+#[bench]
+fn quick_union_large_population(bench: &mut test::Bencher) {
+    let (size, data) = set_up_union_find("benches/union_find_10000");
+
+    bench.iter(
+        || {
+            let mut quick_union = QuickUnion::new(size);
             for &(p, q) in data.iter() {
                 quick_union.union(p, q);
             }
@@ -149,12 +204,23 @@ fn quick_union_large(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn weighted_quick_union_small(bench: &mut test::Bencher) {
+fn quick_union_large_creation(bench: &mut test::Bencher) {
+    let (size, _) = set_up_union_find("benches/union_find_10000");
+
+    bench.iter(
+        || {
+            QuickUnion::new(size)
+        }
+    )
+}
+
+#[bench]
+fn weighted_quick_union_small_population(bench: &mut test::Bencher) {
     let (size, data) = set_up_union_find("benches/union_find_100");
-    let mut weighted_quick_union = WeightedQuickUnion::new(size);
 
     bench.iter(
         || {
+            let mut weighted_quick_union = WeightedQuickUnion::new(size);
             for &(p, q) in data.iter() {
                 weighted_quick_union.union(p, q);
             }
@@ -163,12 +229,23 @@ fn weighted_quick_union_small(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn weighted_quick_union_medium(bench: &mut test::Bencher) {
+fn weighted_quick_union_small_creation(bench: &mut test::Bencher) {
+    let (size, _) = set_up_union_find("benches/union_find_100");
+
+    bench.iter(
+        || {
+            WeightedQuickUnion::new(size)
+        }
+    )
+}
+
+#[bench]
+fn weighted_quick_union_medium_population(bench: &mut test::Bencher) {
     let (size, data) = set_up_union_find("benches/union_find_1000");
-    let mut weighted_quick_union = WeightedQuickUnion::new(size);
 
     bench.iter(
         || {
+            let mut weighted_quick_union = WeightedQuickUnion::new(size);
             for &(p, q) in data.iter() {
                 weighted_quick_union.union(p, q);
             }
@@ -177,12 +254,23 @@ fn weighted_quick_union_medium(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn weighted_quick_union_large(bench: &mut test::Bencher) {
+fn weighted_quick_union_medium_creation(bench: &mut test::Bencher) {
+    let (size, _) = set_up_union_find("benches/union_find_1000");
+
+    bench.iter(
+        || {
+            WeightedQuickUnion::new(size)
+        }
+    )
+}
+
+#[bench]
+fn weighted_quick_union_large_population(bench: &mut test::Bencher) {
     let (size, data) = set_up_union_find("benches/union_find_10000");
-    let mut weighted_quick_union = WeightedQuickUnion::new(size);
 
     bench.iter(
         || {
+            let mut weighted_quick_union = WeightedQuickUnion::new(size);
             for &(p, q) in data.iter() {
                 weighted_quick_union.union(p, q);
             }
@@ -191,12 +279,23 @@ fn weighted_quick_union_large(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn path_compression_weighted_quick_union_small(bench: &mut test::Bencher) {
+fn weighted_quick_union_large_creation(bench: &mut test::Bencher) {
+    let (size, _) = set_up_union_find("benches/union_find_10000");
+
+    bench.iter(
+        || {
+            WeightedQuickUnion::new(size)
+        }
+    )
+}
+
+#[bench]
+fn path_compression_weighted_quick_union_small_population(bench: &mut test::Bencher) {
     let (size, data) = set_up_union_find("benches/union_find_100");
-    let mut path_compression_weighted_quick_union = PathCompressionWeightedQuickUnion::new(size);
 
     bench.iter(
         || {
+            let mut path_compression_weighted_quick_union = PathCompressionWeightedQuickUnion::new(size);
             for &(p, q) in data.iter() {
                 path_compression_weighted_quick_union.union(p, q);
             }
@@ -205,12 +304,23 @@ fn path_compression_weighted_quick_union_small(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn path_compression_weighted_quick_union_medium(bench: &mut test::Bencher) {
+fn path_compression_weighted_quick_union_small_create(bench: &mut test::Bencher) {
+    let (size, _) = set_up_union_find("benches/union_find_100");
+
+    bench.iter(
+        || {
+            PathCompressionWeightedQuickUnion::new(size)
+        }
+    )
+}
+
+#[bench]
+fn path_compression_weighted_quick_union_medium_population(bench: &mut test::Bencher) {
     let (size, data) = set_up_union_find("benches/union_find_1000");
-    let mut path_compression_weighted_quick_union = PathCompressionWeightedQuickUnion::new(size);
 
     bench.iter(
         || {
+            let mut path_compression_weighted_quick_union = PathCompressionWeightedQuickUnion::new(size);
             for &(p, q) in data.iter() {
                 path_compression_weighted_quick_union.union(p, q);
             }
@@ -219,15 +329,37 @@ fn path_compression_weighted_quick_union_medium(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn path_compression_weighted_quick_union_large(bench: &mut test::Bencher) {
-    let (size, data) = set_up_union_find("benches/union_find_10000");
-    let mut path_compression_weighted_quick_union = PathCompressionWeightedQuickUnion::new(size);
+fn path_compression_weighted_quick_union_medium_create(bench: &mut test::Bencher) {
+    let (size, _) = set_up_union_find("benches/union_find_1000");
 
     bench.iter(
         || {
+            PathCompressionWeightedQuickUnion::new(size)
+        }
+    )
+}
+
+#[bench]
+fn path_compression_weighted_quick_union_large_population(bench: &mut test::Bencher) {
+    let (size, data) = set_up_union_find("benches/union_find_10000");
+
+    bench.iter(
+        || {
+            let mut path_compression_weighted_quick_union = PathCompressionWeightedQuickUnion::new(size);
             for &(p, q) in data.iter() {
                 path_compression_weighted_quick_union.union(p, q);
             }
+        }
+    )
+}
+
+#[bench]
+fn path_compression_weighted_quick_union_large_create(bench: &mut test::Bencher) {
+    let (size, _) = set_up_union_find("benches/union_find_10000");
+
+    bench.iter(
+        || {
+            PathCompressionWeightedQuickUnion::new(size)
         }
     )
 }

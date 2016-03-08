@@ -1,4 +1,7 @@
 use std::collections::HashMap;
+use std::hash::BuildHasherDefault;
+
+use fnv::FnvHasher;
 
 use generator::{Generator, DefaultGenerator};
 
@@ -128,9 +131,11 @@ impl UnionFind for WeightedQuickUnion {
     }
 }
 
+type FasterHasher = BuildHasherDefault<FnvHasher>;
+
 pub struct PathCompressionWeightedQuickUnion {
-    points: HashMap<usize, usize>,
-    sizes: HashMap<usize, usize>
+    points: HashMap<usize, usize, FasterHasher>,
+    sizes: HashMap<usize, usize, FasterHasher>
 }
 
 impl PathCompressionWeightedQuickUnion {
@@ -141,8 +146,8 @@ impl PathCompressionWeightedQuickUnion {
     }
 
     pub fn with_generator<G: Generator>(size: usize, generator: &mut G) -> PathCompressionWeightedQuickUnion {
-        let mut sizes = HashMap::with_capacity(size);
-        let mut points = HashMap::with_capacity(size);
+        let mut sizes = HashMap::with_capacity_and_hasher(size, FasterHasher::default());
+        let mut points = HashMap::with_capacity_and_hasher(size, FasterHasher::default());
         for _ in (0..).take(size) {
             let n = generator.next();
             points.insert(n, n);
@@ -161,14 +166,18 @@ impl UnionFind for PathCompressionWeightedQuickUnion {
         let p_root = self.find(p);
         let q_root = self.find(q);
         if self.sizes[&p_root] <= self.sizes[&q_root] {
-            self.points.insert(p_root, q_root);
-            let size = self.sizes[&q_root] + self.sizes[&p_root];
-            self.sizes.insert(q_root, size);
+            let p_entry = self.points.entry(p_root).or_insert(p_root);
+            *p_entry = q_root;
+            let p_size = self.sizes[&p_root];
+            let q_entry = self.sizes.entry(q_root).or_insert(1);
+            *q_entry += p_size;
         }
         else {
-            self.points.insert(q_root, p_root);
-            let size = self.sizes[&p_root] + self.sizes[&q_root];
-            self.sizes.insert(p_root, size);
+            let q_entry = self.points.entry(q_root).or_insert(q_root);
+            *q_entry = p_root;
+            let q_size = self.sizes[&q_root];
+            let p_entry = self.sizes.entry(p_root).or_insert(1);
+            *p_entry += q_size;
         }
     }
 
@@ -179,6 +188,8 @@ impl UnionFind for PathCompressionWeightedQuickUnion {
             let parent = self.points[&(self.points[&point])];
             point = parent;
             self.points.insert(p, parent);
+            let p_entry = self.points.entry(p).or_insert(p);
+            *p_entry = parent;
         }
         point
     }

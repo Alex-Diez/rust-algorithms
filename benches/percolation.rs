@@ -65,12 +65,12 @@ fn populate_data(lines: &mut Lines) -> Vec<(usize, usize)> {
 }
 
 #[bench]
-fn brute_force_percolation_small(bench: &mut test::Bencher) {
+fn brute_force_percolation_small_population(bench: &mut test::Bencher) {
     let (side_size, data) = set_up_percolation("benches/percolation_10x10");
-    let mut percolation = BruteForcePercolation::new(side_size);
 
     bench.iter(
         || {
+            let mut percolation = BruteForcePercolation::new(side_size);
             for &(r, c) in data.iter() {
                 percolation.open(r, c);
             }
@@ -79,12 +79,23 @@ fn brute_force_percolation_small(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn brute_force_percolation_medium(bench: &mut test::Bencher) {
+fn brute_force_percolation_small_creation(bench: &mut test::Bencher) {
+    let (side_size, _) = set_up_percolation("benches/percolation_10x10");
+
+    bench.iter(
+        || {
+            BruteForcePercolation::new(side_size)
+        }
+    )
+}
+
+#[bench]
+fn brute_force_percolation_medium_population(bench: &mut test::Bencher) {
     let (side_size, data) = set_up_percolation("benches/percolation_100x100");
-    let mut percolation = BruteForcePercolation::new(side_size);
 
     bench.iter(
         || {
+            let mut percolation = BruteForcePercolation::new(side_size);
             for &(r, c) in data.iter() {
                 percolation.open(r, c);
             }
@@ -93,12 +104,23 @@ fn brute_force_percolation_medium(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn brute_force_percolation_large(bench: &mut test::Bencher) {
+fn brute_force_percolation_medium_creation(bench: &mut test::Bencher) {
+    let (side_size, _) = set_up_percolation("benches/percolation_100x100");
+
+    bench.iter(
+        || {
+            BruteForcePercolation::new(side_size)
+        }
+    )
+}
+
+#[bench]
+fn brute_force_percolation_large_population(bench: &mut test::Bencher) {
     let (side_size, data) = set_up_percolation("benches/percolation_500x500");
-    let mut percolation = BruteForcePercolation::new(side_size);
 
     bench.iter(
         || {
+            let mut percolation = BruteForcePercolation::new(side_size);
             for &(r, c) in data.iter() {
                 percolation.open(r, c);
             }
@@ -107,12 +129,23 @@ fn brute_force_percolation_large(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn union_find_percolation_small(bench: &mut test::Bencher) {
+fn brute_force_percolation_large_creation(bench: &mut test::Bencher) {
+    let (side_size, _) = set_up_percolation("benches/percolation_500x500");
+
+    bench.iter(
+        || {
+            BruteForcePercolation::new(side_size)
+        }
+    )
+}
+
+#[bench]
+fn union_find_percolation_small_population(bench: &mut test::Bencher) {
     let (side_size, data) = set_up_percolation("benches/percolation_10x10");
-    let mut percolation = UnionFindPercolation::new(side_size);
 
     bench.iter(
         || {
+            let mut percolation = UnionFindPercolation::new(side_size);
             for &(r, c) in data.iter() {
                 percolation.open(r, c);
             }
@@ -121,12 +154,23 @@ fn union_find_percolation_small(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn union_find_percolation_medium(bench: &mut test::Bencher) {
+fn union_find_percolation_small_creation(bench: &mut test::Bencher) {
+    let (side_size, _) = set_up_percolation("benches/percolation_10x10");
+
+    bench.iter(
+        || {
+            UnionFindPercolation::new(side_size)
+        }
+    )
+}
+
+#[bench]
+fn union_find_percolation_medium_population(bench: &mut test::Bencher) {
     let (side_size, data) = set_up_percolation("benches/percolation_100x100");
-    let mut percolation = UnionFindPercolation::new(side_size);
 
     bench.iter(
         || {
+            let mut percolation = UnionFindPercolation::new(side_size);
             for &(r, c) in data.iter() {
                 percolation.open(r, c);
             }
@@ -135,12 +179,23 @@ fn union_find_percolation_medium(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn union_find_percolation_large(bench: &mut test::Bencher) {
+fn union_find_percolation_medium_creation(bench: &mut test::Bencher) {
+    let (side_size, _) = set_up_percolation("benches/percolation_100x100");
+
+    bench.iter(
+        || {
+            UnionFindPercolation::new(side_size)
+        }
+    )
+}
+
+#[bench]
+fn union_find_percolation_large_population(bench: &mut test::Bencher) {
     let (side_size, data) = set_up_percolation("benches/percolation_500x500");
-    let mut percolation = UnionFindPercolation::new(side_size);
 
     bench.iter(
         || {
+            let mut percolation = UnionFindPercolation::new(side_size);
             for &(r, c) in data.iter() {
                 percolation.open(r, c);
             }
@@ -149,15 +204,37 @@ fn union_find_percolation_large(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn hack_union_find_percolation_small(bench: &mut test::Bencher) {
-    let (side_size, data) = set_up_percolation("benches/percolation_10x10");
-    let mut percolation = HackUnionFindPercolation::new(side_size);
+fn union_find_percolation_large_creation(bench: &mut test::Bencher) {
+    let (side_size, _) = set_up_percolation("benches/percolation_500x500");
 
     bench.iter(
         || {
+            UnionFindPercolation::new(side_size)
+        }
+    )
+}
+
+#[bench]
+fn hack_union_find_percolation_small_population(bench: &mut test::Bencher) {
+    let (side_size, data) = set_up_percolation("benches/percolation_10x10");
+
+    bench.iter(
+        || {
+            let mut percolation = HackUnionFindPercolation::new(side_size);
             for &(r, c) in data.iter() {
                 percolation.open(r, c);
             }
+        }
+    )
+}
+
+#[bench]
+fn hack_union_find_percolation_small_creation(bench: &mut test::Bencher) {
+    let (side_size, _) = set_up_percolation("benches/percolation_10x10");
+
+    bench.iter(
+        || {
+            HackUnionFindPercolation::new(side_size)
         }
     )
 }
@@ -165,10 +242,10 @@ fn hack_union_find_percolation_small(bench: &mut test::Bencher) {
 #[bench]
 fn hack_union_find_percolation_medium(bench: &mut test::Bencher) {
     let (side_size, data) = set_up_percolation("benches/percolation_100x100");
-    let mut percolation = HackUnionFindPercolation::new(side_size);
 
     bench.iter(
         || {
+            let mut percolation = HackUnionFindPercolation::new(side_size);
             for &(r, c) in data.iter() {
                 percolation.open(r, c);
             }
@@ -177,15 +254,37 @@ fn hack_union_find_percolation_medium(bench: &mut test::Bencher) {
 }
 
 #[bench]
-fn hack_union_find_percolation_large(bench: &mut test::Bencher) {
-    let (side_size, data) = set_up_percolation("benches/percolation_500x500");
-    let mut percolation = HackUnionFindPercolation::new(side_size);
+fn hack_union_find_percolation_medium_creation(bench: &mut test::Bencher) {
+    let (side_size, _) = set_up_percolation("benches/percolation_100x100");
 
     bench.iter(
         || {
+            HackUnionFindPercolation::new(side_size)
+        }
+    )
+}
+
+#[bench]
+fn hack_union_find_percolation_large(bench: &mut test::Bencher) {
+    let (side_size, data) = set_up_percolation("benches/percolation_500x500");
+
+    bench.iter(
+        || {
+            let mut percolation = HackUnionFindPercolation::new(side_size);
             for &(r, c) in data.iter() {
                 percolation.open(r, c);
             }
+        }
+    )
+}
+
+#[bench]
+fn hack_union_find_percolation_large_creation(bench: &mut test::Bencher) {
+    let (side_size, _) = set_up_percolation("benches/percolation_500x500");
+
+    bench.iter(
+        || {
+            HackUnionFindPercolation::new(side_size)
         }
     )
 }
