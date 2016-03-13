@@ -1,11 +1,11 @@
 pub use std::cmp::Ordering;
 pub use std::f32;
 
-pub use algorithms::collinear_points::Point;
+pub use algorithms::collinear_points::{Point, LineSegment, CollinearPoints};
 
 pub use expectest::prelude::{be_true, be_equal_to};
 
-describe! collinear_points_tests {
+describe! points_tests {
 
     it "should create a point" {
         Point::new(1, 1);
@@ -161,5 +161,61 @@ describe! collinear_points_tests {
         let lesser = Point::new(3, 3);
 
         expect!(point.slope_order()(&greater, &lesser)).to(be_equal_to(Ordering::Equal));
+    }
+}
+
+describe! line_segment_tests {
+
+    it "should show a line segment direction" {
+        let p = Point::new(1, 1);
+        let q = Point::new(2, 2);
+        let ls = LineSegment::new(p, q);
+
+        expect!(ls.to_string()).to(be_equal_to("(1, 1) -> (2, 2)".to_owned()));
+    }
+}
+
+describe! collinear_points_tests {
+
+    it "should have 1 sigment" {
+        let p = Point::new(1, 1);
+        let q = Point::new(4, 4);
+        let points = vec![p, Point::new(2, 2), Point::new(3, 3), q];
+        let cp = CollinearPoints::new(&points);
+
+        expect!(cp.number_of_segments()).to(be_equal_to(1));
+        expect!(cp.segments()).to(be_equal_to(vec![LineSegment::new(p, q)]));
+    }
+
+    it "should not have any sigments if contain less than 3 points on the line" {
+        let points = vec![Point::new(1, 1), Point::new(2, 2), Point::new(3, 3), Point::new(1, 2), Point::new(1, 3), Point::new(2, 1), Point::new(3, 1)];
+        let cp = CollinearPoints::new(&points);
+
+        expect!(cp.number_of_segments()).to(be_equal_to(0));
+        expect!(cp.segments()).to(be_equal_to(vec![]));
+    }
+
+    it "should have 3 sigments" {
+        let p = Point::new(1, 1);
+        let q1 = Point::new(1, 4);
+        let q2 = Point::new(4, 1);
+        let q3 = Point::new(4, 4);
+        let points = vec![p, Point::new(2, 2), Point::new(3, 3), q1, Point::new(1, 2), Point::new(1, 3), q2, Point::new(2, 1), Point::new(3, 1), q3];
+        let cp = CollinearPoints::new(&points);
+
+        expect!(cp.number_of_segments()).to(be_equal_to(3));
+        expect!(cp.segments()).to(be_equal_to(vec![LineSegment::new(p, q1), LineSegment::new(p, q2), LineSegment::new(p, q3)]));
+    }
+
+    it "should have 3 sigments if lines overlap" {
+        let p = Point::new(1, 1);
+        let p1 = Point::new(2, 2);
+        let q1 = Point::new(4, 4);
+        let q2 = Point::new(5, 5);
+        let points = vec![p, p1, Point::new(3, 3), q1, q2];
+        let cp = CollinearPoints::new(&points);
+
+        expect!(cp.number_of_segments()).to(be_equal_to(3));
+        expect!(cp.segments()).to(be_equal_to(vec![LineSegment::new(p, q1), LineSegment::new(p, q2), LineSegment::new(p1, q2)]));
     }
 }

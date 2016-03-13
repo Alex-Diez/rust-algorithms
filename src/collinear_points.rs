@@ -1,7 +1,9 @@
-use std::cmp::{PartialOrd, Ordering};
+use std::collections::HashSet;
+use std::cmp::Ordering;
 use std::f32;
+use std::fmt;
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Copy, Clone, Hash)]
 pub struct Point {
     x: i32,
     y: i32
@@ -37,13 +39,76 @@ impl Point {
     }
 }
 
-impl PartialOrd for Point {
+impl fmt::Display for Point {
 
-    fn partial_cmp(&self, other: &Point) -> Option<Ordering> {
-        if self.x > other.x { Some(Ordering::Greater) }
-        else if self.x < other.x { Some(Ordering::Less) }
-        else if self.y > other.y { Some(Ordering::Greater) }
-        else if self.y < other.y { Some(Ordering::Less) }
-        else { Some(Ordering::Equal) }
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
+    }
+}
+
+#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Copy, Clone, Hash)]
+pub struct LineSegment {
+    p: Point,
+    q: Point
+}
+
+impl LineSegment {
+
+    pub fn new(p: Point, q: Point) -> LineSegment {
+        LineSegment {
+            p: p,
+            q: q
+        }
+    }
+}
+
+impl fmt::Display for LineSegment {
+
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{} -> {}", self.p, self.q)
+    }
+}
+
+pub struct CollinearPoints {
+    segments: HashSet<LineSegment>
+}
+
+impl CollinearPoints {
+
+    pub fn new(points: &Vec<Point>) -> CollinearPoints {
+        let mut points = points.iter().cloned().collect::<Vec<Point>>();
+        points.sort();
+        let mut segments = HashSet::new();
+        for i in 0..points.len() - 3 {
+            let i_point = points[i];
+            for j in (i + 1)..points.len() - 2 {
+                let j_point = points[j];
+                for k in (j + 1)..points.len() - 1 {
+                    let k_point = points[k];
+                    for l in (k + 1)..points.len() {
+                        let l_point = points[l];
+                        let slope_order = i_point.slope_order();
+                        if slope_order(&j_point, &k_point) == Ordering::Equal
+                                && slope_order(&k_point, &l_point) == Ordering::Equal
+                                && slope_order(&l_point, &j_point) == Ordering::Equal {
+                            segments.insert(LineSegment::new(i_point, l_point));
+                        }
+                    }
+                }
+            }
+        }
+        CollinearPoints {
+            segments: segments
+        }
+    }
+
+    pub fn number_of_segments(&self) -> usize {
+        self.segments.len()
+    }
+
+    pub fn segments(&self) -> Vec<LineSegment> {
+        let mut ret = self.segments.iter().cloned().collect::<Vec<LineSegment>>();
+        ret.sort();
+        ret
     }
 }
